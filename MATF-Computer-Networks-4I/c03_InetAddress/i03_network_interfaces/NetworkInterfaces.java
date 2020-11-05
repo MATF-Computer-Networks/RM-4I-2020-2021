@@ -40,7 +40,8 @@ final class NetworkInterfaces {
 									.reduce((acc, ip) -> acc + "\n\t" + ip)
 									.orElse("?")
 					)
-					.forEach(System.out::println);
+					.forEach(System.out::println)
+					;
 		} catch (SocketException ex) {
 			ex.printStackTrace();
 		}

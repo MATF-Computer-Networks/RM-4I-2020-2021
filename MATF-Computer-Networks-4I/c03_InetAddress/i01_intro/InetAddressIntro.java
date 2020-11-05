@@ -48,7 +48,6 @@ final class InetAddressIntro {
 			System.out.println(InetAddress.getByName("www.v6.facebook.com"));
 			System.out.println(Arrays.toString(InetAddress.getAllByName("www.v6.facebook.com")));
 			System.out.println(Arrays.toString(InetAddress.getAllByName("google.com")));
-			System.out.println(Arrays.toString(InetAddress.getAllByName("ipv6.google.com")));
 			System.out.println(InetAddress.getByName("208.201.239.101"));
 			System.out.println();
 
@@ -56,6 +55,7 @@ final class InetAddressIntro {
 
 			// Beware of negative bytes in byte[] address array!
 			// We will see how to convert these later
+			System.out.println(InetAddress.getByName("www.math.rs"));
 			System.out.println(Arrays.toString(InetAddress.getByName("www.math.rs").getAddress()));
 			
 			try {
@@ -72,35 +72,36 @@ final class InetAddressIntro {
 			
 			InetAddress matfShort = InetAddress.getByName("www.math.rs");
 			InetAddress matfFull = InetAddress.getByName("www.matf.bg.ac.rs");
+			System.out.println(matfShort);
+			System.out.println(matfFull);
 			if (matfShort.equals(matfFull))
 				System.out.println("www.math.rs is the same as www.matf.bg.ac.rs");
 			else
 				System.out.println("www.math.rs is not the same as www.matf.bg.ac.rs");
-			System.out.println(matfShort);
-			System.out.println(matfFull);
 			
 		} catch (UnknownHostException ex) {
 			ex.printStackTrace();
 		}
 
 		/* Sample output
-			www.google.com/172.217.16.132
-			www.facebook.com/31.13.84.36
-			www.v6.facebook.com/2a03:2880:f107:83:face:b00c:0:25de
-			[www.v6.facebook.com/2a03:2880:f107:83:face:b00c:0:25de]
-			[google.com/216.58.206.14, google.com/2a00:1450:4001:821:0:0:0:200e]
-			[ipv6.google.com/2a00:1450:4001:806:0:0:0:200e]
+			www.google.com/172.217.169.164
+			www.facebook.com/69.171.250.35
+			www.v6.facebook.com/2a03:2880:f1ff:83:face:b00c:0:25de
+			[www.v6.facebook.com/2a03:2880:f1ff:83:face:b00c:0:25de]
+			[google.com/172.217.169.206, google.com/2a00:1450:4017:80b:0:0:0:200e]
 			/208.201.239.101
 
 			ubuntu/127.0.1.1
+			www.math.rs/147.91.66.10
+			[-109, 91, 66, 10]
 			Cast failed!
 			ipv6.google.com
-			fra15s29-in-x0e.1e100.net
-			2a00:1450:4001:806:0:0:0:200e
+			2a00:1450:4017:802:0:0:0:200e
+			2a00:1450:4017:802:0:0:0:200e
 
-			www.math.rs is the same as www.matf.bg.ac.rs
 			www.math.rs/147.91.66.10
 			www.matf.bg.ac.rs/147.91.66.10
+			www.math.rs is the same as www.matf.bg.ac.rs
 		 */
 	}
 
