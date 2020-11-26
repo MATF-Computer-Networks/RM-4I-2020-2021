@@ -15,26 +15,27 @@ final class ChatServer {
     }
 
 
-    private int port;
-    private Set<UserThread> users = new HashSet<>();
+    private final int port;
+    private final Set<UserThread> users;
 
 
-    private ChatServer(int port) {
+    ChatServer(int port) {
         this.port = port;
+        this.users = Collections.synchronizedSet(new HashSet<>());
     }
 
 
-    private void execute() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+    void execute() {
+        try (ServerSocket server = new ServerSocket(port)) {
             System.err.println("Chat server is listening on port: " + port);
 
             //noinspection InfiniteLoopStatement
             while (true) {
-                Socket socket = serverSocket.accept();
+                Socket client = server.accept();
                 System.err.println("Client connected.");
 
                 // We dispatch a new thread for each user in the chat
-                UserThread user = new UserThread(socket, this);
+                UserThread user = new UserThread(client, this);
                 this.users.add(user);
                 user.start();
 
@@ -48,11 +49,13 @@ final class ChatServer {
         }
     }
 
-    void broadcast(String message, UserThread except) {
-        this.users.stream()
-            .filter(u -> u != except)
-            .forEach(u -> u.sendMessage(message))
+    void broadcast(UserThread sender, String message) {
+        synchronized (this.users) {
+            this.users.stream()
+                    .filter(u -> u != sender)
+                    .forEach(u -> u.sendMessage(message))
             ;
+        }
     }
 
     void remove(UserThread user) {
@@ -62,9 +65,11 @@ final class ChatServer {
     }
 
     List<String> getUserNames() {
-        return this.users.stream()
-            .map(UserThread::getNickname)
-            .collect(Collectors.toList())
-            ;
+        synchronized (this.users) {
+            return this.users.stream()
+                    .map(UserThread::getNickname)
+                    .collect(Collectors.toList())
+                    ;
+        }
     }
 }

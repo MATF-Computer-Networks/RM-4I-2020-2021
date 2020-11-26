@@ -15,32 +15,36 @@ final class ChatClient {
     }
 
 
-    private String hostname;
-    private int port;
+    private final String hostname;
+    private final int port;
     private String name;
 
 
-    private ChatClient(String hostname, int port) {
+    ChatClient(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
     }
 
 
-    private void execute() {
+    void execute() {
         try {
             this.setName();
 
-            // We cannot use try-with-resources block on client socket
-            // because it would be closed immediately after dispatching
-            // a thread. We leave the thread to close the socket.
-            Socket socket = new Socket(this.hostname, this.port);
+            try (Socket socket = new Socket(this.hostname, this.port)) {
+                System.out.println("Connected to the chat server @ " + this.hostname);
 
-            System.out.println("Connected to the chat server @ " + this.hostname);
+                // Dispatch threads
+                var rt = new ClientReadThread(this.name, socket);
+                rt.start();
+                var wt = new ClientWriteThread(this.name, socket);
+                wt.start();
 
-            // Dispatch threads
-            new ClientReadThread(this.name, socket).start();
-            new ClientWriteThread(this.name, socket).start();
-
+                // Wait for threads so we can close the socket (try-with-resources)
+                rt.join();
+                wt.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } catch (UnknownHostException ex) {
             System.out.println("Server not found: " + ex.getMessage());
         } catch (IOException ex) {
