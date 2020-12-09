@@ -1,5 +1,0 @@
-wow such file
-
-:)
-
-must have trailing newline at the end of the file
