@@ -28,7 +28,7 @@ final class EchoServer extends Thread implements AutoCloseable {
 					this.socket.receive(request);
 
 					// Send response (using same buffer from request packet)
-					DatagramPacket response = new DatagramPacket(buf, response.getLength(),
+					DatagramPacket response = new DatagramPacket(buf, request.getLength(),
 											                     request.getAddress(), request.getPort());
 					this.socket.send(response);
 
